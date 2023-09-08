@@ -1,11 +1,10 @@
 "use client"
 
 import { AuthContext } from "@/context/auth";
-import { currentDate, formatDate, formatTime } from "@/utils/dateUtils";
 import { Input } from "@nextui-org/input";
 import { DocumentData } from "firebase/firestore";
 import { useRouter } from "next/navigation";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from "@nextui-org/react";
@@ -24,7 +23,6 @@ export default function FormReto() {
   const [loading, setLoading] = useState(false);
   const [reto, setReto] = useState("");
   const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
 
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
@@ -55,13 +53,7 @@ export default function FormReto() {
   const handleSubmit = async () => {
 
     if (date === "") {
-      toast.error("Debes elegir la fecha en que finalizara el reto");
-      return;
-    }
-
-
-    if (time === "") {
-      toast.error("Debes elegir la hora en que finalizara el reto");
+      toast.error("Debes elegir la fecha y hora en que finalizara el reto");
       return;
     }
 
@@ -70,19 +62,19 @@ export default function FormReto() {
     toast.promise(createNewReto({
       id: uuidv4(),
       owner: user?.displayName,
+      ownerId: user?.id,
       photoURL: user?.photoURL,
-      startDate: currentDate(),
+      startDate: new Date(),
       reto: reto,
       company: "Tu Lojita",
       status: "proceso",
-      endDate: formatDate(date) + ", " + formatTime(time)
+      endDate: new Date(date)
     }), {
       loading: 'Cargando...',
       success: (data) => {
         setLoading(false);
         setReto("");
         setDate("");
-        setTime("");
         setRetos([...retos!, data as DocumentData]);
         return "Reto creado correctamente";
       },
@@ -122,27 +114,19 @@ export default function FormReto() {
       >
         Crear reto
       </Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false}>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1 text-xl">Elije una hora</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1 text-xl">Elije fecha y hora</ModalHeader>
               <ModalBody>
                 <h2 className={subtitle()}>Elije la fecha y hora en la que quieres que finalice tu reto.</h2>
                 <Input
                   size="lg"
                   variant="faded"
-                  type="date"
+                  type="datetime-local"
                   value={date}
                   onValueChange={setDate}
-                  className="max-w-sm w-full"
-                />
-                <Input
-                  size="lg"
-                  variant="faded"
-                  type="time"
-                  value={time}
-                  onValueChange={setTime}
                   className="max-w-sm w-full"
                 />
               </ModalBody>

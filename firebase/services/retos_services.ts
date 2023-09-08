@@ -1,17 +1,18 @@
 
-import { DocumentData, collection, doc, getDocs, orderBy, query, setDoc, limit, onSnapshot, serverTimestamp } from 'firebase/firestore';
+import { DocumentData, collection, doc, getDocs, orderBy, query, setDoc, limit, onSnapshot, serverTimestamp, deleteDoc } from 'firebase/firestore';
 import { db } from '../config';
 import { IReto } from '@/interfaces/reto';
 import { Dispatch, SetStateAction } from 'react';
 
 export async function createNewReto(reto: IReto): Promise<IReto | undefined> {
-  const { id, owner, photoURL, startDate, reto: retoData, company, status, endDate } = reto;
+  const { id, owner, ownerId, photoURL, startDate, reto: retoData, company, status, endDate } = reto;
   try {
     await setDoc(
       doc(db, 'retos', id!),
       {
         id: id!,
         owner,
+        ownerId,
         photoURL,
         startDate,
         reto: retoData,
@@ -48,4 +49,8 @@ export async function getRetosWhithSnapshot(state: DocumentData[] | undefined, s
     // console.log("Current retos in CA: ", retos.join(", "));
     setState([...state!, retos]);
   });
+}
+
+export async function deleteRetoById(id: string) {
+  await deleteDoc(doc(db, "retos", id));
 }

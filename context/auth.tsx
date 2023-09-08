@@ -6,8 +6,6 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/firebase/config';
 import { GetUserUID } from '@/firebase/services/auth_services';
 import { DocumentData } from 'firebase/firestore';
-import { currentDate } from '@/utils/dateUtils';
-import { getRetos } from '@/firebase/services/retos_services';
 
 interface ContextProps {
   isLogged: boolean;

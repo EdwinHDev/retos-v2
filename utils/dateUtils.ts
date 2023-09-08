@@ -1,43 +1,23 @@
+import { Timestamp } from "@firebase/firestore";
 
-export function currentDate() {
-  const newDate = new Date();
-  const opciones = {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
+export function formatDate(date: Timestamp) {
+  const options: Intl.DateTimeFormatOptions = {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
     hour: "2-digit",
-    minute: '2-digit',
-    hour12: true,
-  };
-
-  return new Date(newDate).toLocaleString("es-ES", opciones as any);
-}
-
-export function formatDate(date: string) {
-  const dataParts = date.split('-');
-  if (dataParts.length !== 3) {
-    return 'Fecha inválida';
+    minute: "2-digit",
+    hour12: true
   }
 
-  const [year, month, day] = dataParts;
-  return `${day}/${month}/${year}`;
+  const miliseconds = date.seconds * 1000 + date.nanoseconds / 1000000;
+  return new Date(miliseconds).toLocaleString("es-ES", options);
 }
 
-export function formatTime(time: string) {
-  const timesParts = time.split(':');
-  
-  if (timesParts.length === 2) {
-    let hours = parseInt(timesParts[0], 10);
-    const mins = timesParts[1];
-    let ampm = 'a. m.';
-
-    if (hours === 12) {
-      ampm = 'p. m.';
-    } else if (hours > 12) {
-      ampm = 'p. m.';
-      hours -= 12;
-    }
-    
-    return `${hours}:${mins} ${ampm}`;
-  }
+export function checkDate(date: Timestamp) {
+  const miliseconds = date.seconds * 1000 + date.nanoseconds / 1000000;
+  const _date = new Date(miliseconds);
+  const _currentDate = new Date();
+  if(_currentDate.getTime() > _date.getTime() ) return true;
+  return false;
 }

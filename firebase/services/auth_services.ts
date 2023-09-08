@@ -11,6 +11,7 @@ export async function createUserWithEmail(displayName: string, email: string, pa
       await setDoc(
         doc(db, 'users', res.user.uid),
         {
+          id: res.user.uid,
           displayName: displayName,
           email: res.user.email,
           photoURL: "",
@@ -43,6 +44,7 @@ export async function SignInWithGoogle(): Promise<User | undefined> {
       await setDoc(
         doc(db, 'users', res.user.uid),
         {
+          id: res.user.uid,
           displayName: res.user.displayName,
           email: res.user.email,
           photoURL: res.user.photoURL,
@@ -65,6 +67,7 @@ export async function SignInWithGithub(): Promise<User | undefined> {
       await setDoc(
         doc(db, 'users', res.user.uid),
         {
+          id: res.user.uid,
           displayName: username,
           email: res.user.email,
           photoURL: res.user.photoURL,
