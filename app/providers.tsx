@@ -6,6 +6,7 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { ThemeProviderProps } from "next-themes/dist/types";
 import { AuthProvider } from "@/context/auth";
 import { Toaster } from 'sonner';
+import { RetosProvider } from "@/context/retos";
 
 export interface ProvidersProps {
 	children: React.ReactNode;
@@ -15,12 +16,14 @@ export interface ProvidersProps {
 export function Providers({ children, themeProps }: ProvidersProps) {
 	return (
 		<AuthProvider>
-			<NextUIProvider>
-				<NextThemesProvider {...themeProps}>
-					<Toaster position="bottom-center" richColors closeButton dir="auto" />
-					{children}
-				</NextThemesProvider>
-			</NextUIProvider>
+			<RetosProvider>
+				<NextUIProvider>
+					<NextThemesProvider {...themeProps}>
+						<Toaster position="bottom-center" richColors closeButton />
+						{children}
+					</NextThemesProvider>
+				</NextUIProvider>
+			</RetosProvider>
 		</AuthProvider>
 	);
 }

@@ -1,17 +1,15 @@
 "use client"
 
-import { useState, FormEvent, useEffect, ChangeEvent } from 'react';
+import { useState, FormEvent, ChangeEvent } from 'react';
 
 import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
 import { Divider } from "@nextui-org/react";
 import { GithubIcon, GoogleIcon } from "./icons";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "@/firebase/config";
-import { IUser } from '@/interfaces/user';
-import { SignInUserWithEmail } from '@/firebase/services/auth_services';
+import { SignInUserWithEmail, SignInWithGithub, SignInWithGoogle } from '@/firebase/services/auth_services';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { validateEmail } from '@/utils/validateEmail';
 
 interface IUserLogin {
   email: string;
@@ -30,18 +28,6 @@ export default function SignInForm() {
   const [userData, setUserData] = useState<IUserLogin>(INITIAL_USER_DATA);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const uid = user.uid;
-        console.log(user)
-      } else {
-        console.log("El usuario está desconectado")
-      }
-    });
-    // console.log(auth.currentUser)
-  }, []);
-
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setUserData({
       ...userData,
@@ -52,24 +38,57 @@ export default function SignInForm() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    setLoading(true);
-
     const { email, password } = userData;
 
     if ([email, password].includes("")) {
-      console.log("campos obligatorios");
+      toast.error("El email y la contraseña son obligatorios");
       return;
     }
 
+    if(!validateEmail(email)) {
+      toast.error("El email no es válido");
+      return;
+    }
+
+    if(password.length < 6) {
+      toast.error("La contraseña debe tener al menos 6 caracteres");
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      const user = await SignInUserWithEmail(email, password);
-      console.log(user);
+      await SignInUserWithEmail(email, password);
       setLoading(false);
       router.push("/");
     } catch (error) {
       setLoading(false);
       console.log(error);
       toast.error("El email o la contraseña es invalido");
+    }
+  }
+
+  const loginWithGoogle = async () => {
+
+    // Validar si ya existe ese email
+    
+
+    try {
+      await SignInWithGoogle();
+      router.push("/");
+    } catch (error) {
+      console.log(error);
+      toast.error("Algo salio mal, no se pudo iniciar sesión");
+    }
+  }
+
+  const loginWithGithub = async () => {
+    try {
+      await SignInWithGithub();
+      router.push("/");
+    } catch (error) {
+      console.log(error);
+      toast.error("Algo salio mal, no se pudo iniciar sesión");
     }
   }
 
@@ -80,6 +99,7 @@ export default function SignInForm() {
           size="lg"
           endContent={<GoogleIcon />}
           className="max-w-sm w-full bg-white hover:bg-zinc-100 dark:bg-zinc-900 dark:hover:bg-zinc-950 border-2 border-zinc-200 dark:border-zinc-800"
+          onClick={loginWithGoogle}
         >
           Iniciar con Google
         </Button>
@@ -87,6 +107,7 @@ export default function SignInForm() {
           size="lg"
           endContent={<GithubIcon />}
           className="max-w-sm w-full bg-white hover:bg-zinc-100 dark:bg-zinc-900 dark:hover:bg-zinc-950 border-2 border-zinc-200 dark:border-zinc-800"
+          onClick={loginWithGithub}
         >
           Iniciar con GitHub
         </Button>
@@ -100,6 +121,7 @@ export default function SignInForm() {
       <form
         onSubmit={handleSubmit}
         className="w-full flex flex-col items-center gap-6"
+        noValidate
       >
         <Input
           size="md"

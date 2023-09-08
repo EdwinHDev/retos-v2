@@ -4,11 +4,11 @@ import { useState, FormEvent, ChangeEvent } from 'react';
 
 import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
-import { auth } from "@/firebase/config";
 import { createUserWithEmail } from '@/firebase/services/auth_services';
 import { useRouter } from 'next/navigation';
 import { IUser } from '@/interfaces/user';
 import { toast } from 'sonner';
+import { validateEmail } from '@/utils/validateEmail';
 
 const INITIAL_USER_DATA: IUser = {
   displayName: "",
@@ -32,14 +32,29 @@ export default function SignUpForm() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    setLoading(true);
-
     const { displayName, email, password } = userData;
 
     if ([displayName, email, password].includes("")) {
-      console.log("campos obligatorios");
+      toast.error("Todos los campos son obligatorios");
       return;
     }
+
+    if(displayName.length < 3) {
+      toast.error("El nombre completo debe tener al menos 3 caracteres");
+      return;
+    }
+
+    if(!validateEmail(email)) {
+      toast.error("El email no es válido");
+      return;
+    }
+
+    if(password.length < 6) {
+      toast.error("La contraseña debe tener al menos 6 caracteres");
+      return;
+    }
+
+    setLoading(true);
 
     toast.promise(createUserWithEmail(displayName, email, password), {
       loading: 'Cargando...',
@@ -47,12 +62,16 @@ export default function SignUpForm() {
         console.log(data);
         setLoading(false);
         router.push("/");
-        return `El usuario ${data?.email} fue creado`;
+        return `El usuario ${displayName} fue creado`;
       },
       error: (error) => {
         console.log(error);
         setLoading(false);
-        return "No se pudo registrar el usuario";
+        if(error.code === "auth/email-already-in-use") {
+          return "Ya existe un usuario con ese email";
+        } else {
+          return "No se pudo registrar el usuario";
+        }
       },
     });
 
@@ -62,6 +81,7 @@ export default function SignUpForm() {
     <form
       onSubmit={handleSubmit}
       className="w-full flex flex-col items-center gap-6"
+      noValidate
     >
       <Input
         size="md"

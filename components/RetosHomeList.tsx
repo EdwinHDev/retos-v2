@@ -12,9 +12,11 @@ import {
   Tooltip,
   User,
 } from "@nextui-org/react";
-import React from "react";
+import React, { useContext } from "react";
 import { EditIcon, DeleteIcon, EyeIcon } from "./icons";
-import { users, columns } from "@/data/data";
+import { columns } from "@/data/data";
+import { RetosContext } from "@/context/retos";
+import { DocumentData } from "firebase/firestore";
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
   terminado: "success",
@@ -22,22 +24,23 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
   proceso: "warning",
 };
 
-type User = (typeof users)[0];
-
 export default function RetosHomeList() {
-  const renderCell = React.useCallback((user: User, columnKey: React.Key) => {
-    const cellValue = user[columnKey as keyof User];
+
+  const { retos, loading } = useContext(RetosContext);
+
+  const renderCell = React.useCallback((reto: DocumentData, columnKey: React.Key) => {
+    const cellValue = reto[columnKey as keyof DocumentData];
 
     switch (columnKey) {
       case "name":
         return (
           <User
-            avatarProps={{ radius: "lg", src: user.avatar }}
-            description={user.startDate}
-            name={cellValue}
+            avatarProps={{ radius: "lg", src: reto.photoURL }}
+            description={reto.startDate}
+            name={reto.owner}
             className="min-w-max"
           >
-            {user.email}
+            {reto.owner}
           </User>
         );
       case "reto":
@@ -45,7 +48,7 @@ export default function RetosHomeList() {
           <div className="flex flex-col min-w-[160px]">
             <p className="text-bold text-sm">{cellValue}</p>
             <p className="text-bold text-sm text-default-400">
-              {user.company}
+              {reto.company}
             </p>
           </div>
         );
@@ -53,7 +56,7 @@ export default function RetosHomeList() {
         return (
           <Chip
             className="capitalize"
-            color={statusColorMap[user.status]}
+            color={statusColorMap[reto.status]}
             size="sm"
             variant="flat"
           >
@@ -64,7 +67,7 @@ export default function RetosHomeList() {
         return (
           <div className="flex flex-col min-w-max">
             <p className="text-bold text-sm text-default-400">
-              {user.endDate}
+              {reto.endDate}
             </p>
           </div>
         );
@@ -93,6 +96,10 @@ export default function RetosHomeList() {
     }
   }, []);
 
+  if(loading) {
+    return <p>Cargando datos...</p>
+  }
+
   return (
     <Table aria-label="tabla de participantes">
       <TableHeader columns={columns}>
@@ -105,11 +112,11 @@ export default function RetosHomeList() {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody items={users}>
-        {(item) => (
-          <TableRow key={item.id}>
+      <TableBody items={retos} emptyContent={"No hay retos disponibles"}>
+        {(reto) => (
+          <TableRow key={reto.id}>
             {(columnKey) => (
-              <TableCell>{renderCell(item, columnKey)}</TableCell>
+              <TableCell>{renderCell(reto, columnKey)}</TableCell>
             )}
           </TableRow>
         )}
