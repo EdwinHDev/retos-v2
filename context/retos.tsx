@@ -3,9 +3,7 @@
 import { createContext, useState, useEffect, Dispatch, SetStateAction } from 'react';
 
 import { DocumentData, collection, limit, onSnapshot, orderBy, query } from 'firebase/firestore';
-import { failedStateReto, getRetos, getRetosWhithSnapshot } from '@/firebase/services/retos_services';
 import { db } from '@/firebase/config';
-import { checkDate } from '@/utils/dateUtils';
 
 interface ContextProps {
   loading: boolean;

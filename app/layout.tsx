@@ -19,11 +19,12 @@ async function listenRetoFails() {
 	if (dataRetos && dataRetos.length > 0) {
 		dataRetos.map(async reto => {
 			if (reto.status === "proceso" && checkDate(reto.endDate)) {
-				try {
-					await failedStateReto(reto.id);
-				} catch (error) {
-					console.log(error);
-				}
+				console.log("entro aqui...")
+				// try {
+				// 	await failedStateReto(reto.id);
+				// } catch (error) {
+				// 	console.log(error);
+				// }
 			}
 		})
 	}
@@ -33,7 +34,7 @@ listenRetoFails();
 
 setInterval(() => {
 	listenRetoFails();
-}, 10000);
+}, 1000);
 
 export const metadata: Metadata = {
 	title: {
