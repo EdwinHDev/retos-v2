@@ -36,24 +36,6 @@ export const RetosProvider = ({ children }: Props) => {
     });
   }, []);
 
-  verifyStatus();
-
-  function verifyStatus() {
-    setInterval(() => {
-      if (retos.length > 0) {
-        retos.map(async reto => {
-          if(reto.status === "proceso" && checkDate(reto.endDate)) {
-            try {
-              await failedStateReto(reto.id);
-            } catch (error) {
-              console.log(error);
-            }
-          }
-        })
-      }
-    }, 10000);
-  }
-
   return (
     <RetosContext.Provider
       value={{
