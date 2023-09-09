@@ -19,12 +19,11 @@ async function listenRetoFails() {
 	if (dataRetos && dataRetos.length > 0) {
 		dataRetos.map(async reto => {
 			if (reto.status === "proceso" && checkDate(reto.endDate)) {
-				console.log("entro aqui...")
-				// try {
-				// 	await failedStateReto(reto.id);
-				// } catch (error) {
-				// 	console.log(error);
-				// }
+				try {
+					await failedStateReto(reto.id);
+				} catch (error) {
+					console.log(error);
+				}
 			}
 		})
 	}
