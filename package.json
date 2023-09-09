@@ -36,6 +36,7 @@
     "next-themes": "^0.2.1",
     "postcss": "8.4.27",
     "react": "18.2.0",
+    "react-canvas-confetti": "^1.4.0",
     "react-dom": "18.2.0",
     "sonner": "^0.7.0",
     "tailwind-variants": "^0.1.13",

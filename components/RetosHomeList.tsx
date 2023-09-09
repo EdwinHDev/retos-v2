@@ -2,6 +2,7 @@
 
 import {
   Button,
+  Checkbox,
   Chip,
   ChipProps,
   Modal,
@@ -9,6 +10,7 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  Switch,
   Table,
   TableBody,
   TableCell,
@@ -26,9 +28,11 @@ import { RetosContext } from "@/context/retos";
 import { DocumentData, Timestamp } from "firebase/firestore";
 import { formatDate, checkDate } from "@/utils/dateUtils";
 import { toast } from "sonner";
-import { deleteRetoById } from "@/firebase/services/retos_services";
+import { deleteRetoById, finishStateReto } from "@/firebase/services/retos_services";
 import { subtitle } from "./primitives";
 import { AuthContext } from "@/context/auth";
+import LoadingRetosHomeList from "./LoadingRetosHomeList";
+import Confetti from "./Confetti";
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
   terminado: "success",
@@ -43,16 +47,25 @@ export default function RetosHomeList() {
 
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [id, setId] = useState("");
+  const [explode, setExplode] = useState(false);
 
-  const deleteReto = async (endDate: Timestamp) => {
-    if (!checkDate(endDate)) {
+  const explodeConffeti = () => {
+    setExplode(true);
+    setTimeout(() => {
+      setExplode(false);
+    }, 6000);
+  }
+
+  const deleteReto = async (status: string) => {
+    if (status === "proceso") {
       toast.error("No puedes eliminar este reto, aun no se ha finalizado");
-      return
+      return;
     }
 
     onOpen();
   }
 
+  // TODO: No autorizar a otros que no sean los dueños de borrar
   const comfirmDeleteReto = async (id: string) => {
     try {
       await deleteRetoById(id);
@@ -65,8 +78,23 @@ export default function RetosHomeList() {
     }
   }
 
-  const renderCell = React.useCallback((reto: DocumentData, columnKey: React.Key, user: DocumentData) => {
+  const renderCell = React.useCallback((reto: DocumentData, columnKey: React.Key, user: DocumentData, explode: boolean) => {
     const cellValue = reto[columnKey as keyof DocumentData];
+
+    function finishReto() {
+      if (reto.status === "proceso" && !checkDate(reto.endDate)) {
+        try {
+          finishStateReto(reto.id);
+          toast.success("Enhorabuena, has feinalizado tu reto!!!");
+          explodeConffeti();
+        } catch (error) {
+          console.log(error);
+          toast.error("Algo salio mal, no puedes finalizar el rero");
+        }
+      } else {
+        console.log("no puedes")
+      }
+    }
 
     switch (columnKey) {
       case "name":
@@ -110,22 +138,38 @@ export default function RetosHomeList() {
         );
       case "actions":
         return (
-          <div className="relative flex items-center gap-2">
+          <div className="relative flex items-center gap-3">
             {
               user?.id === reto.ownerId && (
                 <Tooltip content="Eliminar">
-              <span
-                className="text-lg text-default-400 cursor-pointer active:opacity-50"
-                onClick={() => {
-                  deleteReto(reto.endDate);
-                  setId(reto.id);
-                }}
-              >
-                <DeleteIcon />
-              </span>
-            </Tooltip>
+                  <span
+                    className="text-lg text-default-400 cursor-pointer active:opacity-50"
+                    onClick={() => {
+                      deleteReto(reto.status);
+                      setId(reto.id);
+                    }}
+                  >
+                    <DeleteIcon />
+                  </span>
+                </Tooltip>
               )
             }
+            {
+              user?.id === reto.ownerId && (
+                <Tooltip content={reto.status === "proceso" ? "Finalizar reto" : reto.status === "terminado" ? "Reto finalizado" : "Reto fallido"}>
+                  <div>
+                    {explode && <Confetti />}
+                    <Checkbox
+                      isDisabled={reto.status === "proceso" ? false : reto.status === "terminado" ? true : true}
+                      isSelected={reto.status === "proceso" ? false : reto.status === "terminado" ? true : false}
+                      color="success"
+                      onClick={finishReto}
+                    />
+                  </div>
+                </Tooltip>
+              )
+            }
+
           </div>
         );
       default:
@@ -134,7 +178,9 @@ export default function RetosHomeList() {
   }, []);
 
   if (loading) {
-    return <p>Cargando datos...</p>
+    return (
+      <LoadingRetosHomeList />
+    )
   }
 
   return (
@@ -179,7 +225,7 @@ export default function RetosHomeList() {
           {(reto) => (
             <TableRow key={reto.id}>
               {(columnKey) => (
-                <TableCell>{renderCell(reto, columnKey, user!)}</TableCell>
+                <TableCell>{renderCell(reto, columnKey, user!, explode)}</TableCell>
               )}
             </TableRow>
           )}

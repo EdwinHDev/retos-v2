@@ -3,8 +3,9 @@
 import { createContext, useState, useEffect, Dispatch, SetStateAction } from 'react';
 
 import { DocumentData, collection, limit, onSnapshot, orderBy, query } from 'firebase/firestore';
-import { getRetos, getRetosWhithSnapshot } from '@/firebase/services/retos_services';
+import { failedStateReto, getRetos, getRetosWhithSnapshot } from '@/firebase/services/retos_services';
 import { db } from '@/firebase/config';
+import { checkDate } from '@/utils/dateUtils';
 
 interface ContextProps {
   loading: boolean;
@@ -28,29 +29,30 @@ export const RetosProvider = ({ children }: Props) => {
     onSnapshot(q, (querySnapshot) => {
       const docs: DocumentData[] = [];
       querySnapshot.forEach((doc) => {
-        // arrRetos.push(doc.data());
         docs.push(doc.data());
       });
-      // setRetos([...retos!, arrRetos]);
       setLoading(false);
       setRetos(docs);
     });
   }, []);
 
-  // useEffect(() => {
-  //   const getRetosData = async () => {
-  //     try {
-  //       const res = await getRetos();
-  //       setRetos(res);
-  //       setLoading(false);
-  //     } catch (error) {
-  //       console.log(error);
-  //       setLoading(false);
-  //     }
-  //   }
+  verifyStatus();
 
-  //   getRetosData();
-  // }, []);
+  function verifyStatus() {
+    setInterval(() => {
+      if (retos.length > 0) {
+        retos.map(async reto => {
+          if(reto.status === "proceso" && checkDate(reto.endDate)) {
+            try {
+              await failedStateReto(reto.id);
+            } catch (error) {
+              console.log(error);
+            }
+          }
+        })
+      }
+    }, 10000);
+  }
 
   return (
     <RetosContext.Provider

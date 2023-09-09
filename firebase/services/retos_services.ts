@@ -1,5 +1,5 @@
 
-import { DocumentData, collection, doc, getDocs, orderBy, query, setDoc, limit, onSnapshot, serverTimestamp, deleteDoc } from 'firebase/firestore';
+import { DocumentData, collection, doc, getDocs, orderBy, query, setDoc, limit, onSnapshot, serverTimestamp, deleteDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../config';
 import { IReto } from '@/interfaces/reto';
 import { Dispatch, SetStateAction } from 'react';
@@ -44,13 +44,38 @@ export async function getRetosWhithSnapshot(state: DocumentData[] | undefined, s
   const unsubscribe = onSnapshot(q, (querySnapshot) => {
     const retos: DocumentData[] = [];
     querySnapshot.forEach((doc) => {
-        retos.push(doc.data());
+      retos.push(doc.data());
     });
     // console.log("Current retos in CA: ", retos.join(", "));
     setState([...state!, retos]);
   });
 }
 
+export async function getAllRetosWhithSnapshot() {
+  const q = query(collection(db, "retos"));
+  onSnapshot(q, (querySnapshot) => {
+    const retos: DocumentData[] = [];
+    querySnapshot.forEach((doc) => {
+      retos.push(doc.data());
+    });
+    console.log(retos)
+  });
+}
+
 export async function deleteRetoById(id: string) {
   await deleteDoc(doc(db, "retos", id));
+}
+
+export async function finishStateReto(id: string) {
+  const retoRef = doc(db, "retos", id);
+  await updateDoc(retoRef, {
+    status: "terminado"
+  });
+}
+
+export async function failedStateReto(id: string) {
+  const retoRef = doc(db, "retos", id);
+  await updateDoc(retoRef, {
+    status: "fallido"
+  });
 }
