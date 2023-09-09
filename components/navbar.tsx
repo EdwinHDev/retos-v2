@@ -93,7 +93,13 @@ export const Navbar = () => {
 												<p className="font-bold">Registrado como</p>
 												<p className="font-bold">{user?.displayName}</p>
 											</DropdownItem>
-											<DropdownItem key="profile" onClick={() => router.push("/profile")}>
+											<DropdownItem
+												key="profile"
+												onClick={() => {
+													router.push("/profile")
+													setIsMenuOpen(false)
+												}}
+											>
 												Perfil
 											</DropdownItem>
 											<DropdownItem
@@ -149,6 +155,7 @@ export const Navbar = () => {
 							<NextLink
 								color="foreground"
 								href={item.href}
+								onClick={() => setIsMenuOpen(false)}
 							>
 								{item.label}
 							</NextLink>
@@ -162,6 +169,7 @@ export const Navbar = () => {
 									<NextLink
 										color="foreground"
 										href="/profile"
+										onClick={() => setIsMenuOpen(false)}
 									>
 										Perfil
 									</NextLink>
