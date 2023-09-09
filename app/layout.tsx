@@ -7,34 +7,6 @@ import { Navbar } from "@/components/navbar";
 import { Link } from "@nextui-org/link";
 import clsx from "clsx";
 
-import { db } from "@/firebase/config";
-import { query, collection, onSnapshot, DocumentData, getDocs } from "firebase/firestore";
-import { failedStateReto, getRetos } from "@/firebase/services/retos_services";
-import { checkDate } from "@/utils/dateUtils";
-
-// No olvidarlo
-async function listenRetoFails() {
-	const dataRetos = await getRetos();
-
-	if (dataRetos && dataRetos.length > 0) {
-		dataRetos.map(async reto => {
-			if (reto.status === "proceso" && checkDate(reto.endDate)) {
-				try {
-					await failedStateReto(reto.id);
-				} catch (error) {
-					console.log(error);
-				}
-			}
-		})
-	}
-}
-
-listenRetoFails();
-
-setInterval(() => {
-	listenRetoFails();
-}, 10000);
-
 export const metadata: Metadata = {
 	title: {
 		default: siteConfig.name,
@@ -46,9 +18,9 @@ export const metadata: Metadata = {
 		{ media: "(prefers-color-scheme: dark)", color: "black" },
 	],
 	icons: {
-		icon: "/favicon.ico",
-		shortcut: "/favicon-16x16.png",
-		apple: "/apple-touch-icon.png",
+		icon: "/images/logo.svg",
+		shortcut: "/images/logo.svg",
+		apple: "/images/logo.svg",
 	},
 };
 

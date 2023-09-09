@@ -20,21 +20,31 @@ import clsx from "clsx";
 import { ThemeSwitch } from "@/components/theme-switch";
 
 import { LogoRetos } from "@/components/icons";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "@/context/auth";
-import { Button } from "@nextui-org/react";
+import { Avatar, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
 import { signOut } from "@/firebase/services/auth_services";
+import { useRouter } from "next/navigation";
 
 export const Navbar = () => {
 
-	const { isLogged } = useContext(AuthContext);
+	const router = useRouter();
+
+	const { isLogged, user } = useContext(AuthContext);
+
+	const [isMenuOpen, setIsMenuOpen] = useState(false);
 
 	const signOutSession = async () => {
 		await signOut();
 	}
 
 	return (
-		<NextUINavbar maxWidth="xl" position="sticky">
+		<NextUINavbar
+			maxWidth="xl"
+			position="sticky"
+			isMenuOpen={isMenuOpen}
+			onMenuOpenChange={setIsMenuOpen}
+		>
 			<NavbarContent className="basis-1/5 sm:basis-full" justify="start">
 				<NavbarBrand as="li" className="gap-3 max-w-fit">
 					<NextLink className="flex justify-start items-center gap-3" href="/">
@@ -49,16 +59,7 @@ export const Navbar = () => {
 				justify="end"
 			>
 				<NavbarItem className="hidden sm:flex gap-2">
-					{/* <Link isExternal href={siteConfig.links.twitter} aria-label="Twitter">
-						<TwitterIcon className="text-default-500" />
-					</Link>
-					<Link isExternal href={siteConfig.links.discord} aria-label="Discord">
-						<DiscordIcon className="text-default-500" />
-					</Link>
-					<Link isExternal href={siteConfig.links.github} aria-label="Github">
-						<GithubIcon className="text-default-500" />
-					</Link> */}
-					<ul className="hidden lg:flex gap-4 justify-start mr-4">
+					<ul className="hidden lg:flex gap-4 justify-start items-center mr-4">
 						{siteConfig.navItems.map((item) => (
 							<NavbarItem key={item.href}>
 								<NextLink
@@ -76,16 +77,34 @@ export const Navbar = () => {
 						<NavbarItem>
 							{
 								isLogged ? (
-									<Link
-										className={clsx(
-											linkStyles({ color: "danger" }),
-											"data-[active=true]:text-primary data-[active=true]:font-medium cursor-pointer"
-										)}
-										color="danger"
-										onPress={signOutSession}
-									>
-										Salir
-									</Link>
+									<Dropdown placement="bottom-end">
+										<DropdownTrigger>
+											<Avatar
+												isBordered
+												size="sm"
+												showFallback
+												name={user?.displayName}
+												src={user?.photoURL}
+												className="cursor-pointer"
+											/>
+										</DropdownTrigger>
+										<DropdownMenu aria-label="User Actions" variant="flat">
+											<DropdownItem key="registred" className="h-14 gap-2 dark:bg-zinc-800 cursor-default" isReadOnly>
+												<p className="font-bold">Registrado como</p>
+												<p className="font-bold">{user?.displayName}</p>
+											</DropdownItem>
+											<DropdownItem key="profile" onClick={() => router.push("/profile")}>
+												Perfil
+											</DropdownItem>
+											<DropdownItem
+												key="logout"
+												color="danger"
+												onPress={signOutSession}
+											>
+												Salir
+											</DropdownItem>
+										</DropdownMenu>
+									</Dropdown>
 								) : (
 									<NextLink
 										className={clsx(
@@ -103,43 +122,53 @@ export const Navbar = () => {
 					</ul>
 					<ThemeSwitch />
 				</NavbarItem>
-				{/* <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
-				<NavbarItem className="hidden md:flex">
-					<Button
-            isExternal
-						as={Link}
-						className="text-sm font-normal text-default-600 bg-default-100"
-						href={siteConfig.links.sponsor}
-						startContent={<HeartFilledIcon className="text-danger" />}
-						variant="flat"
-					>
-						Sponsor
-					</Button>
-				</NavbarItem> */}
 			</NavbarContent>
 
 			<NavbarContent className="lg:hidden basis-1 pl-4" justify="end">
-				{/* <Link isExternal href={siteConfig.links.github} aria-label="Github">
-					<GithubIcon className="text-default-500" />
-				</Link> */}
 				<ThemeSwitch />
-				<NavbarMenuToggle />
+				{
+					isLogged ? (
+						<Avatar
+							isBordered
+							size="sm"
+							showFallback
+							name={user?.displayName}
+							src={user?.photoURL}
+							className="cursor-pointer"
+							onClick={() => setIsMenuOpen(!isMenuOpen)}
+						/>
+					) : (
+						<NavbarMenuToggle />
+					)
+				}
 			</NavbarContent>
-
 			<NavbarMenu>
-				{/* {searchInput} */}
 				<div className="mx-4 mt-2 flex flex-col gap-2">
 					{siteConfig.navMenuItems.map((item, index) => (
 						<NavbarMenuItem key={`${item}-${index}`}>
-							<Link
+							<NextLink
 								color="foreground"
 								href={item.href}
-								size="lg"
 							>
 								{item.label}
-							</Link>
+							</NextLink>
 						</NavbarMenuItem>
 					))}
+					{
+						isLogged && (
+							<>
+								<Divider />
+								<NavbarMenuItem>
+									<NextLink
+										color="foreground"
+										href="/profile"
+									>
+										Perfil
+									</NextLink>
+								</NavbarMenuItem>
+							</>
+						)
+					}
 					<NavbarMenuItem>
 						{
 							isLogged ? (
