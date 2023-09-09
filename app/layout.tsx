@@ -33,7 +33,7 @@ listenRetoFails();
 
 setInterval(() => {
 	listenRetoFails();
-}, 1000);
+}, 10000);
 
 export const metadata: Metadata = {
 	title: {
