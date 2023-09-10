@@ -92,7 +92,7 @@ export const Navbar = () => {
 												className="cursor-pointer"
 											/>
 										</DropdownTrigger>
-										<DropdownMenu aria-label="User Actions" variant="flat">
+										<DropdownMenu aria-label="Perfil de usuario" variant="flat">
 											<DropdownItem key="registred" className="h-14 gap-2 dark:bg-zinc-800 cursor-default" isReadOnly>
 												<p className="font-bold">Registrado como</p>
 												<p className="font-bold">{user?.displayName}</p>
