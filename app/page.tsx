@@ -18,7 +18,7 @@ export default function Home() {
 
 			<section className="w-full mt-10">
 				<p className="text-bold text-default-400 text-center mb-1">
-					Últimos 5 retos
+					Últimos 10 retos
 				</p>
 				<RetosHomeList />
 			</section>

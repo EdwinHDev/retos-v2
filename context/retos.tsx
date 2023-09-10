@@ -25,7 +25,7 @@ export const RetosProvider = ({ children }: Props) => {
   const [retos, setRetos] = useState<DocumentData[]>([]);
 
   useEffect(() => {
-    const q = query(collection(db, "retos"), limit(5), orderBy("timestampCreated", "desc"));
+    const q = query(collection(db, "retos"), limit(10), orderBy("timestampCreated", "desc"));
     onSnapshot(q, (querySnapshot) => {
       const docs: DocumentData[] = [];
       querySnapshot.forEach((doc) => {

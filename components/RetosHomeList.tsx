@@ -111,7 +111,7 @@ export default function RetosHomeList() {
       case "reto":
         return (
           <div className="flex flex-col min-w-[160px]">
-            <p className="text-bold text-sm">{cellValue}</p>
+            <p className="text-bold text-sm line-clamp-2">{cellValue}</p>
             <p className="text-bold text-sm text-default-400">
               {reto.company}
             </p>
@@ -210,7 +210,10 @@ export default function RetosHomeList() {
           )}
         </ModalContent>
       </Modal>
-      <Table aria-label="tabla de participantes">
+      <Table
+        aria-label="tabla de participantes"
+        selectionMode="single"
+      >
         <TableHeader columns={columns}>
           {(column) => (
             <TableColumn
