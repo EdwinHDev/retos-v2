@@ -257,11 +257,11 @@ export const EditIcon: React.FC<IconSvgProps> = (props) => {
       role="presentation"
       viewBox="0 0 20 20"
       width={width}
+      stroke="currentColor"
       {...props}
     >
       <path
         d="M11.05 3.00002L4.20835 10.2417C3.95002 10.5167 3.70002 11.0584 3.65002 11.4334L3.34169 14.1334C3.23335 15.1084 3.93335 15.775 4.90002 15.6084L7.58335 15.15C7.95835 15.0834 8.48335 14.8084 8.74168 14.525L15.5834 7.28335C16.7667 6.03335 17.3 4.60835 15.4583 2.86668C13.625 1.14168 12.2334 1.75002 11.05 3.00002Z"
-        stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeMiterlimit={10}
@@ -269,7 +269,6 @@ export const EditIcon: React.FC<IconSvgProps> = (props) => {
       />
       <path
         d="M9.90833 4.20831C10.2667 6.50831 12.1333 8.26665 14.45 8.49998"
-        stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeMiterlimit={10}
@@ -277,7 +276,6 @@ export const EditIcon: React.FC<IconSvgProps> = (props) => {
       />
       <path
         d="M2.5 18.3333H17.5"
-        stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeMiterlimit={10}
@@ -478,6 +476,53 @@ export const ChevronDownIcon: React.FC<IconSvgProps> = (props) => {
         strokeLinejoin="round"
         strokeMiterlimit={10}
         strokeWidth="1.5"
+      />
+    </svg>
+  );
+};
+
+export const UserIcon: React.FC<IconSvgProps> = (props) => {
+  const { width, height = 24 } = props;
+
+  return (
+    <svg
+      aria-hidden="true"
+      fill="none"
+      height={height}
+      role="presentation"
+      viewBox="0 0 24 24"
+      width={width}
+      {...props}
+    >
+      <path
+        d="M12 2C9.38 2 7.25 4.13 7.25 6.75C7.25 9.32 9.26 11.4 11.88 11.49C11.96 11.48 12.04 11.48 12.1 11.49C12.12 11.49 12.13 11.49 12.15 11.49C12.16 11.49 12.16 11.49 12.17 11.49C14.73 11.4 16.74 9.32 16.75 6.75C16.75 4.13 14.62 2 12 2Z"
+        fill="currentColor"
+      ></path>
+      <path
+        d="M17.0809 14.1489C14.2909 12.2889 9.74094 12.2889 6.93094 14.1489C5.66094 14.9989 4.96094 16.1489 4.96094 17.3789C4.96094 18.6089 5.66094 19.7489 6.92094 20.5889C8.32094 21.5289 10.1609 21.9989 12.0009 21.9989C13.8409 21.9989 15.6809 21.5289 17.0809 20.5889C18.3409 19.7389 19.0409 18.5989 19.0409 17.3589C19.0309 16.1289 18.3409 14.9889 17.0809 14.1489Z"
+        fill="currentColor"
+      ></path>
+    </svg>
+  );
+};
+
+export const MailIcon: React.FC<IconSvgProps> = (props) => {
+  const { width, height = 24 } = props;
+
+  return (
+    <svg
+      aria-hidden="true"
+      fill="none"
+      focusable="false"
+      height={height}
+      role="presentation"
+      viewBox="0 0 24 24"
+      width={width}
+      {...props}
+    >
+      <path
+        d="M17 3.5H7C4 3.5 2 5 2 8.5V15.5C2 19 4 20.5 7 20.5H17C20 20.5 22 19 22 15.5V8.5C22 5 20 3.5 17 3.5ZM17.47 9.59L14.34 12.09C13.68 12.62 12.84 12.88 12 12.88C11.16 12.88 10.31 12.62 9.66 12.09L6.53 9.59C6.21 9.33 6.16 8.85 6.41 8.53C6.67 8.21 7.14 8.15 7.46 8.41L10.59 10.91C11.35 11.52 12.64 11.52 13.4 10.91L16.53 8.41C16.85 8.15 17.33 8.2 17.58 8.53C17.84 8.85 17.79 9.33 17.47 9.59Z"
+        fill="currentColor"
       />
     </svg>
   );

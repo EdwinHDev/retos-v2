@@ -9,6 +9,7 @@ import { DocumentData } from 'firebase/firestore';
 
 interface ContextProps {
   isLogged: boolean;
+  loading: boolean;
   user: DocumentData | undefined;
 }
 
@@ -21,6 +22,7 @@ interface Props {
 export const AuthProvider = ({ children }: Props) => {
 
   const [isLogged, setIsLogged] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<DocumentData | undefined>(undefined);
 
   useEffect(() => {
@@ -30,10 +32,12 @@ export const AuthProvider = ({ children }: Props) => {
         GetUserUID(currentUser.uid)
           .then(user => {
             setUser(user);
+            setLoading(false);
           })
           .catch(error => console.log(error))
       } else {
         setIsLogged(false);
+        setLoading(false);
       }
     });
   }, []);
@@ -42,7 +46,8 @@ export const AuthProvider = ({ children }: Props) => {
     <AuthContext.Provider
       value={{
         user,
-        isLogged
+        isLogged,
+        loading
       }}
     >
       {children}

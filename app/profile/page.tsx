@@ -1,9 +1,11 @@
-import { title } from "@/components/primitives";
+import Profile from "@/components/Profile";
+import AuthGuard from "@/guards/AuthGuard";
 
 export default function ProfilePage() {
+
 	return (
-		<div>
-			<h1 className={title()}>Perfil</h1>
-		</div>
+		<AuthGuard>
+			<Profile />
+		</AuthGuard>
 	);
 }

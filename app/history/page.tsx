@@ -6,8 +6,6 @@ import { useState } from "react";
 
 export default function AboutPage() {
 
-	const [countRetos, setCountRetos] = useState(0);
-
 	return (
 		<section className="flex flex-col items-center justify-center gap-6 py-8 md:py-10">
 			<div className="inline-block max-w-lg text-center justify-center">
@@ -17,8 +15,6 @@ export default function AboutPage() {
 					Todos los retos creados hasta ahora.
 				</h2>
 			</div>
-
-			{/* <FormReto /> */}
 
 			<section className="w-full mt-10">
 				<RetosHistoryList />

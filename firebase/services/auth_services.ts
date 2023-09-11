@@ -1,6 +1,6 @@
 
-import { createUserWithEmailAndPassword, User, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, GithubAuthProvider, UserCredential, getAdditionalUserInfo } from 'firebase/auth';
-import { DocumentData, doc, getDoc, setDoc } from 'firebase/firestore';
+import { createUserWithEmailAndPassword, User, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, GithubAuthProvider, UserCredential, getAdditionalUserInfo, updateProfile  } from 'firebase/auth';
+import { DocumentData, collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import { auth, db } from '../config';
 
 export async function createUserWithEmail(displayName: string, email: string, password: string): Promise<User | undefined> {
@@ -97,4 +97,42 @@ export async function signOut(): Promise<void> {
   } catch (error) {
     throw error;
   }
+}
+
+export async function updateUserProfile(displayName: string, photoURL: string) {
+  updateProfile(auth.currentUser!, {
+    displayName: displayName,
+    photoURL: photoURL
+  }).then(() => {
+    const userRef = doc(db, "users", auth.currentUser?.uid!);
+    updateDoc(userRef, {
+      displayName,
+      photoURL
+    }).then(res => {
+      console.log(res);
+    }).catch(error => {
+      console.log(error);
+    });
+
+    const q = query(collection(db, "retos"), where("ownerId", "==", auth.currentUser?.uid!));
+    getDocs(q)
+    .then(querySnapshot => {
+      querySnapshot.forEach((doc) => {
+        // console.log(doc.id, " => ", doc.data());
+        updateDoc(doc.ref, {
+          owner: displayName
+        }).then(() => {
+          // ...
+        }).catch(error => {
+          console.log(error);
+        })
+      });
+    })
+    .catch(error => {
+      console.log(error);
+    })
+    
+  }).catch((error) => {
+    console.log(error)
+  });
 }

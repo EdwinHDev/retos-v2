@@ -59,7 +59,6 @@ export default function SignUpForm() {
     toast.promise(createUserWithEmail(displayName, email, password), {
       loading: 'Cargando...',
       success: (data) => {
-        console.log(data);
         setLoading(false);
         router.push("/");
         return `El usuario ${displayName} fue creado`;
