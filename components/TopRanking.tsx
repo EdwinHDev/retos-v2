@@ -4,6 +4,8 @@ import { getTopRanking } from "@/firebase/services/auth_services";
 import { Avatar, Tooltip } from "@nextui-org/react";
 import { DocumentData } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { statusOptions } from '../data/data';
+import {RankingUser} from "./RankingUser";
 
 export const TopRanking = () => {
 
@@ -31,7 +33,26 @@ export const TopRanking = () => {
             <p>Loading</p>
           ) : (
             <>
-              <Tooltip content="Tercer lugar" placement="bottom">
+              {
+                topRanking && topRanking.map((user, index) => (
+                  user.score < 1 ? (
+                    <RankingUser
+                      key={user.id}
+                      position={index+1}
+                    />
+                  ) : (
+                    <RankingUser
+                      key={user.id}
+                      displayName={user.displayName}
+                      photoURL={user.photoURL}
+                      retos={user.retos}
+                      score={user.score}
+                      position={(index+1)}
+                    />
+                  )
+                ))
+              }
+              {/* <Tooltip content="Tercer lugar" placement="bottom">
                 <div className="w-[60px] h-6 bg-default-200 rounded-lg relative">
                   <Tooltip
                     placement="top"
@@ -90,7 +111,7 @@ export const TopRanking = () => {
                   </div>
                 </div>
               </Tooltip>
-              <Tooltip content="Primer lugar" placement="bottom">
+              <Tooltip content="Primer lugar" placement="bottom" >
                 <div className="w-[60px] h-16 bg-default-200 rounded-lg relative">
                   <Tooltip
                     placement="top"
@@ -242,7 +263,7 @@ export const TopRanking = () => {
                     </svg>
                   </div>
                 </div>
-              </Tooltip>
+              </Tooltip> */}
             </>
           )
         }
