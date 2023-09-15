@@ -1,5 +1,7 @@
-import { FC } from "react";
+"use client";
+
 import { Avatar, Tooltip } from "@nextui-org/react";
+import { useEffect, useRef, useState } from "react";
 
 interface Retos {
   completed: number;
@@ -17,14 +19,46 @@ interface User {
 
 export const RankingUser = ({ displayName = "Sin retador", score = 0, retos = { completed: 0, failed: 0, progress: 0 }, photoURL = "", position = 0 }: User) => {
 
+  const [showPosition, setShowPosition] = useState(false);
+  const [showRetador, setShowRetador] = useState(false);
+
+  const contentStartsRef = useRef<HTMLDivElement | null>(null);
+  const avatarRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handler = (e: any) => {
+      if (!contentStartsRef.current?.contains(e.target) && !avatarRef.current?.contains(e.target)
+      ) {
+        setShowPosition(false);
+        setShowRetador(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => {
+      document.removeEventListener("mousedown", handler);
+    };
+  });
+
   return (
-    <Tooltip content={position === 1 ? "Primer lugar" : position === 2 ? "Segundo lugar" : "Tercer lugar"} placement="bottom" isDisabled={position === 0}>
-      <div className={`w-[60px] bg-default-200 rounded-lg relative ${position === 1 ? "h-16" : position === 2 ? "h-10" : "h-6 -order-1"} `}>
+    <Tooltip delay={200} isOpen={showPosition} content={position === 1 ? "Primer lugar" : position === 2 ? "Segundo lugar" : "Tercer lugar"} placement="bottom" isDisabled={position === 0}>
+      <div
+        className={`w-[60px] bg-default-200 rounded-lg relative ${position === 1 ? "h-16" : position === 2 ? "h-10" : "h-6 -order-1"} `}
+        onClick={() => {
+          setShowPosition(!showPosition);
+          setShowRetador(false);
+        }}
+        onMouseEnter={() => {
+          setShowPosition(true);
+          setShowRetador(false);
+        }}
+        onMouseLeave={() => setShowPosition(false)}
+      >
         <Tooltip
+          isOpen={showRetador}
           placement="top"
           isDisabled={position === 0}
           content={
-            <div className="">
+            <div>
               <p className="text-center font-semibold text-default-500 text-sm">{displayName}</p>
               {
                 score > 0 ? (
@@ -64,6 +98,15 @@ export const RankingUser = ({ displayName = "Sin retador", score = 0, retos = { 
             src={photoURL}
             size="sm"
             className="absolute -top-10 left-2/4 -translate-x-2/4"
+            onClick={() => {
+              setShowRetador(!showRetador);
+              setShowPosition(false);
+            }}
+            onMouseEnter={() => {
+              setShowRetador(true);
+              setShowPosition(false);
+            }}
+            onMouseLeave={() => setShowRetador(false)}
           />
         </Tooltip>
         {
