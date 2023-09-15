@@ -12,6 +12,8 @@ export const TopRanking = () => {
   const [topRanking, setTopRanking] = useState<DocumentData[] | undefined>([]);
   const [loading, setLoading] = useState(true);
 
+  console.log(topRanking)
+
   useEffect(() => {
     const getRanking = async () => {
       try {

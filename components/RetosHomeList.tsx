@@ -115,6 +115,7 @@ export default function RetosHomeList() {
           await updateDoc(userRef, {
             "retos.completed": Number(user?.retos.completed!) +1,
             "retos.progress": Number(user?.retos.progress!) -1,
+            "score": Number(user?.score!) +1
           });
 
           toast.success("Enhorabuena, has feinalizado tu reto!!!");
