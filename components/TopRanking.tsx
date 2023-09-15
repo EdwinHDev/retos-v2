@@ -38,7 +38,13 @@ export const TopRanking = () => {
                     content={
                       <div className="">
                         <p className="text-center font-semibold text-default-500 text-sm">{topRanking![2]?.displayName}</p>
-                        <p className="text-center font-semibold text-default-500">Bronce</p>
+                        {
+                          topRanking![2]?.score > 0 ? (
+                            <p className="text-center font-semibold text-default-500 text-red-300/30">Bronce</p>
+                          ) : (
+                            <p className="text-center font-semibold text-default-300">Sin clasificación</p>
+                          )
+                        }
                         <div className="flex justify-center divide-x divide-default-200 mt-1">
                           <p className="px-2 text-success-500 font-semibold">{topRanking![2]?.retos.completed}</p>
                           <p className="px-2 text-danger-500 font-semibold">{topRanking![2]?.retos.failed}</p>
@@ -75,7 +81,13 @@ export const TopRanking = () => {
                     content={
                       <div className="">
                         <p className="text-center font-semibold text-default-500 text-sm">{topRanking![0]?.displayName}</p>
-                        <p className="text-center font-semibold text-default-500">Bronce</p>
+                        {
+                          topRanking![0]?.score > 0 ? (
+                            <p className="text-center font-semibold text-default-500 text-red-300/30">Bronce</p>
+                          ) : (
+                            <p className="text-center font-semibold text-default-300">Sin clasificación</p>
+                          )
+                        }
                         <div className="flex justify-center divide-x divide-default-200 mt-1">
                           <p className="px-2 text-success-500 font-semibold">{topRanking![0]?.retos.completed}</p>
                           <p className="px-2 text-danger-500 font-semibold">{topRanking![0]?.retos.failed}</p>
@@ -139,7 +151,13 @@ export const TopRanking = () => {
                     content={
                       <div className="">
                         <p className="text-center font-semibold text-default-500 text-sm">{topRanking![1]?.displayName}</p>
-                        <p className="text-center font-semibold text-default-500">Bronce</p>
+                        {
+                          topRanking![1]?.score > 0 ? (
+                            <p className="text-center font-semibold text-default-500 text-red-300/30">Bronce</p>
+                          ) : (
+                            <p className="text-center font-semibold text-default-300">Sin clasificación</p>
+                          )
+                        }
                         <div className="flex justify-center divide-x divide-default-200 mt-1">
                           <p className="px-2 text-success-500 font-semibold">{topRanking![1]?.retos.completed}</p>
                           <p className="px-2 text-danger-500 font-semibold">{topRanking![1]?.retos.failed}</p>
