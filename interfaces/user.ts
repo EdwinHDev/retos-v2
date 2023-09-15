@@ -1,3 +1,8 @@
+interface retos {
+  completed: number;
+  failed: number;
+  progress: number;
+}
 
 export interface IUser {
   id?: string;
@@ -6,4 +11,6 @@ export interface IUser {
   photoURL?: string;
   emailVerified?: boolean;
   password: string;
+  retos: retos;
+  score: number;
 }

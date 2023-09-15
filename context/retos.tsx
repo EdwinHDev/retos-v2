@@ -1,11 +1,12 @@
 "use client";
 
-import { createContext, useState, useEffect, Dispatch, SetStateAction } from 'react';
+import { createContext, useState, useEffect, Dispatch, SetStateAction, useContext } from 'react';
 
-import { DocumentData, collection, limit, onSnapshot, orderBy, query } from 'firebase/firestore';
+import { DocumentData, collection, doc, getDoc, limit, onSnapshot, orderBy, query, updateDoc } from 'firebase/firestore';
 import { db } from '@/firebase/config';
-import { failedStateReto } from '@/firebase/services/retos_services';
+import { failedStateReto, getRetos } from '@/firebase/services/retos_services';
 import { checkDate } from '@/utils/dateUtils';
+import { AuthContext } from './auth';
 
 interface ContextProps {
   loading: boolean;
@@ -23,6 +24,7 @@ export const RetosProvider = ({ children }: Props) => {
 
   const [loading, setLoading] = useState(true);
   const [retos, setRetos] = useState<DocumentData[]>([]);
+  const [intervalState, setIntervalState] = useState<NodeJS.Timer | null>(null);
 
   useEffect(() => {
     const q = query(collection(db, "retos"), limit(10), orderBy("timestampCreated", "desc"));
@@ -33,30 +35,42 @@ export const RetosProvider = ({ children }: Props) => {
       });
       setLoading(false);
       setRetos(docs);
+      // clearInterval(Number(intervalState));
     });
   }, []);
 
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     listenRetoFails();
+  //     console.log("buscando...")
+  //   }, 10000)
+  
+  //   setIntervalState(intervalId);
+  //   return () => clearInterval(intervalId);
+  // }, []);
+
   // No olvidarlo
-  async function listenRetoFails() {
-
-    if (retos && retos.length > 0) {
-      retos.map(async reto => {
-        if (reto.status === "proceso" && checkDate(reto.endDate)) {
-          try {
-            await failedStateReto(reto.id);
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      })
-    }
-  }
-
-  listenRetoFails();
-
-  setInterval(() => {
-    listenRetoFails();
-  }, 10000);
+  // async function listenRetoFails() {
+  //   const allRetos = await getRetos();
+  //   if (allRetos && allRetos.length > 0) {
+  //     allRetos.map(async reto => {
+  //       if (reto.status === "proceso" && checkDate(reto.endDate)) {
+  //         try {
+  //           await failedStateReto(reto.id);
+  //           console.log(reto.status)
+  //           const userRef = doc(db, "users", reto.ownerId);
+  //           const docSnap = await getDoc(userRef);
+  //           await updateDoc(userRef, {
+  //             "retos.progress": Number(docSnap.data()!.retos.progress!) - 1,
+  //             "retos.failed": Number(docSnap.data()!?.retos.failed!) + 1,
+  //           });
+  //         } catch (error) {
+  //           console.log(error);
+  //         }
+  //       }
+  //     })
+  //   }
+  // }
 
   return (
     <RetosContext.Provider

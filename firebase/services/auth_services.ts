@@ -1,7 +1,8 @@
 
-import { createUserWithEmailAndPassword, User, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, GithubAuthProvider, UserCredential, getAdditionalUserInfo, updateProfile  } from 'firebase/auth';
-import { DocumentData, collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore';
+import { createUserWithEmailAndPassword, User, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, GithubAuthProvider, UserCredential, getAdditionalUserInfo, updateProfile } from 'firebase/auth';
+import { DocumentData, collection, doc, getDoc, getDocs, limit, onSnapshot, orderBy, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import { auth, db } from '../config';
+import { Dispatch, SetStateAction } from 'react';
 
 export async function createUserWithEmail(displayName: string, email: string, password: string): Promise<User | undefined> {
   try {
@@ -15,6 +16,12 @@ export async function createUserWithEmail(displayName: string, email: string, pa
           displayName: displayName,
           email: res.user.email,
           photoURL: "",
+          retos: {
+            completed: 0,
+            failed: 0,
+            progress: 0
+          },
+          score: 0
         },
         { merge: true }
       );
@@ -48,6 +55,12 @@ export async function SignInWithGoogle(): Promise<User | undefined> {
           displayName: res.user.displayName,
           email: res.user.email,
           photoURL: res.user.photoURL,
+          retos: {
+            completed: 0,
+            failed: 0,
+            progress: 0
+          },
+          score: 0
         },
         { merge: true }
       );
@@ -71,6 +84,12 @@ export async function SignInWithGithub(): Promise<User | undefined> {
           displayName: username,
           email: res.user.email,
           photoURL: res.user.photoURL,
+          retos: {
+            completed: 0,
+            failed: 0,
+            progress: 0
+          },
+          score: 0
         },
         { merge: true }
       );
@@ -81,11 +100,12 @@ export async function SignInWithGithub(): Promise<User | undefined> {
   }
 }
 
-export async function GetUserUID(uid: string): Promise<DocumentData | undefined> {
+export async function GetUserUID(uid: string, setUser: Dispatch<SetStateAction<DocumentData | undefined>>) {
   try {
-    const docRef = doc(db, "users", uid);
-    const docSnap = await getDoc(docRef);
-    return docSnap.data();
+    const unsub = onSnapshot(doc(db, "users", uid), (doc) => {
+      // console.log("Current data: ", doc.data());
+      setUser(doc.data());
+    });
   } catch (error) {
     throw error;
   }
@@ -116,23 +136,57 @@ export async function updateUserProfile(displayName: string, photoURL: string) {
 
     const q = query(collection(db, "retos"), where("ownerId", "==", auth.currentUser?.uid!));
     getDocs(q)
-    .then(querySnapshot => {
-      querySnapshot.forEach((doc) => {
-        // console.log(doc.id, " => ", doc.data());
-        updateDoc(doc.ref, {
-          owner: displayName
-        }).then(() => {
-          // ...
-        }).catch(error => {
-          console.log(error);
-        })
-      });
-    })
-    .catch(error => {
-      console.log(error);
-    })
-    
+      .then(querySnapshot => {
+        querySnapshot.forEach((doc) => {
+          // console.log(doc.id, " => ", doc.data());
+          updateDoc(doc.ref, {
+            owner: displayName
+          }).then(() => {
+            // ...
+          }).catch(error => {
+            console.log(error);
+          })
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      })
+
   }).catch((error) => {
     console.log(error)
   });
+}
+
+export async function getTopRanking(setState: Dispatch<SetStateAction<DocumentData[] | undefined>>) {
+  const q = query(collection(db, "users"), orderBy("score", "desc"), limit(3));
+  const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const top: DocumentData[] = [];
+    querySnapshot.forEach((doc) => {
+      top.push(doc.data());
+    });
+    setState(top);
+  });
+}
+
+type retos = {
+  completed: number,
+  failed: number,
+  progress: number
+}
+
+export async function updateRetos(uid: string, retos: retos, score: number) {
+  const { completed, failed, progress } = retos;
+  const retosRef = doc(db, "users", uid);
+  try {
+    await updateDoc(retosRef, {
+      retos: {
+        completed,
+        failed,
+        progress
+      },
+      score
+    });
+  } catch (error) {
+    console.log(error);
+  }
 }

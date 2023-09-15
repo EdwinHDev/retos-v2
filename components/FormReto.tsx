@@ -2,7 +2,7 @@
 
 import { AuthContext } from "@/context/auth";
 import { Input } from "@nextui-org/input";
-import { DocumentData } from "firebase/firestore";
+import { DocumentData, doc, updateDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -13,6 +13,8 @@ import { createNewReto } from "@/firebase/services/retos_services";
 import { RetosContext } from "@/context/retos";
 
 import { v4 as uuidv4 } from 'uuid';
+import { updateRetos } from "@/firebase/services/auth_services";
+import { db } from "@/firebase/config";
 
 export default function FormReto() {
 
@@ -76,20 +78,22 @@ export default function FormReto() {
         setReto("");
         setDate("");
         setRetos([...retos!, data as DocumentData]);
+
+        const userRef = doc(db, "users", user?.id);
+        updateDoc(userRef, {
+          "retos.progress": Number(user?.retos.progress + 1)
+        })
+
         return "Reto creado correctamente";
       },
       error: (error) => {
         console.log(error);
         setLoading(false);
         console.log(error.code)
-        // if(error.code === "auth/email-already-in-use") {
-        //   return "Ya existe un usuario con ese email";
-        // } else {
-        //   return "No se pudo registrar el usuario";
-        // }
         return "No se pudo crear el reto";
       },
-    })
+    });
+
     onClose();
   }
 

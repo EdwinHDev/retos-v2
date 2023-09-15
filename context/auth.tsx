@@ -4,7 +4,7 @@ import { createContext, useState, useEffect } from 'react';
 
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/firebase/config';
-import { GetUserUID } from '@/firebase/services/auth_services';
+import { GetUserUID, getTopRanking } from '@/firebase/services/auth_services';
 import { DocumentData } from 'firebase/firestore';
 
 interface ContextProps {
@@ -29,9 +29,8 @@ export const AuthProvider = ({ children }: Props) => {
     onAuthStateChanged(auth, currentUser => {
       if (currentUser) {
         setIsLogged(true);
-        GetUserUID(currentUser.uid)
-          .then(user => {
-            setUser(user);
+        GetUserUID(currentUser.uid, setUser)
+          .then(() => {
             setLoading(false);
           })
           .catch(error => console.log(error))
