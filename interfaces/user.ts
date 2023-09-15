@@ -11,6 +11,6 @@ export interface IUser {
   photoURL?: string;
   emailVerified?: boolean;
   password: string;
-  retos: retos;
-  score: number;
+  retos?: retos;
+  score?: number;
 }
