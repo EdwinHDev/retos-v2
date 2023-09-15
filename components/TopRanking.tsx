@@ -40,7 +40,23 @@ export const TopRanking = () => {
                         <p className="text-center font-semibold text-default-500 text-sm">{topRanking![2]?.displayName}</p>
                         {
                           topRanking![2]?.score > 0 ? (
-                            <p className="text-center font-semibold text-default-500 text-red-300/30">Bronce</p>
+                            topRanking![2]?.score >= 100 ? (
+                              <p className="text-center font-semibold text-cyan-400">Diamante</p>
+                            ) : (
+                              topRanking![2]?.score >= 70 ? (
+                                <p className="text-center font-semibold text-emerald-400">Platino</p>
+                              ) : (
+                                topRanking![2]?.score >= 45 ? (
+                                  <p className="text-center font-semibold text-amber-400">Oro</p>
+                                ) : (
+                                  topRanking![2]?.score >= 20 ? (
+                                    <p className="text-center font-semibold text-zinc-400">Plata</p>
+                                  ) : (
+                                    <p className="text-center font-semibold text-[#ad8865]">Bronce</p>
+                                  )
+                                )
+                              )
+                            )
                           ) : (
                             <p className="text-center font-semibold text-default-300">Sin clasificación</p>
                           )
@@ -83,7 +99,23 @@ export const TopRanking = () => {
                         <p className="text-center font-semibold text-default-500 text-sm">{topRanking![0]?.displayName}</p>
                         {
                           topRanking![0]?.score > 0 ? (
-                            <p className="text-center font-semibold text-default-500 text-red-300/30">Bronce</p>
+                            topRanking![0]?.score >= 100 ? (
+                              <p className="text-center font-semibold text-cyan-400">Diamante</p>
+                            ) : (
+                              topRanking![0]?.score >= 70 ? (
+                                <p className="text-center font-semibold text-emerald-400">Platino</p>
+                              ) : (
+                                topRanking![0]?.score >= 45 ? (
+                                  <p className="text-center font-semibold text-amber-400">Oro</p>
+                                ) : (
+                                  topRanking![0]?.score >= 20 ? (
+                                    <p className="text-center font-semibold text-zinc-400">Plata</p>
+                                  ) : (
+                                    <p className="text-center font-semibold text-[#ad8865]">Bronce</p>
+                                  )
+                                )
+                              )
+                            )
                           ) : (
                             <p className="text-center font-semibold text-default-300">Sin clasificación</p>
                           )
@@ -153,7 +185,23 @@ export const TopRanking = () => {
                         <p className="text-center font-semibold text-default-500 text-sm">{topRanking![1]?.displayName}</p>
                         {
                           topRanking![1]?.score > 0 ? (
-                            <p className="text-center font-semibold text-default-500 text-red-300/30">Bronce</p>
+                            topRanking![1]?.score >= 100 ? (
+                              <p className="text-center font-semibold text-cyan-400">Diamante</p>
+                            ) : (
+                              topRanking![1]?.score >= 70 ? (
+                                <p className="text-center font-semibold text-emerald-400">Platino</p>
+                              ) : (
+                                topRanking![1]?.score >= 45 ? (
+                                  <p className="text-center font-semibold text-amber-400">Oro</p>
+                                ) : (
+                                  topRanking![1]?.score >= 20 ? (
+                                    <p className="text-center font-semibold text-zinc-400">Plata</p>
+                                  ) : (
+                                    <p className="text-center font-semibold text-[#ad8865]">Bronce</p>
+                                  )
+                                )
+                              )
+                            )
                           ) : (
                             <p className="text-center font-semibold text-default-300">Sin clasificación</p>
                           )
