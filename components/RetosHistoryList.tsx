@@ -34,7 +34,7 @@ import { columns, statusOptions } from "@/data/data";
 import { capitalize } from "@/utils/capitalize";
 import { VerticalDotsIcon, SearchIcon, ChevronDownIcon, PlusIcon, DeleteIcon } from "./icons";
 import { db } from "@/firebase/config";
-import { DocumentData, query, collection, orderBy, onSnapshot } from "firebase/firestore";
+import { DocumentData, query, collection, orderBy, onSnapshot, updateDoc, doc } from "firebase/firestore";
 import { checkDate, formatDate } from "@/utils/dateUtils";
 import Confetti from "./Confetti";
 import { AuthContext } from "@/context/auth";
@@ -72,6 +72,7 @@ export default function RetosHistoryList() {
   const [retos, setRetos] = useState<DocumentData[]>([]);
   const [id, setId] = useState("");
   const [explode, setExplode] = useState(false);
+  const [retoStatus, setRetoStatus] = useState("");
 
   useEffect(() => {
     const q = query(collection(db, "retos"), orderBy("timestampCreated", "desc"));
@@ -93,6 +94,7 @@ export default function RetosHistoryList() {
   }
 
   const deleteReto = async (status: string) => {
+    setRetoStatus(status);
     if (status === "proceso") {
       toast.error("No puedes eliminar este reto, aun no se ha finalizado");
       return;
@@ -105,6 +107,28 @@ export default function RetosHistoryList() {
   const comfirmDeleteReto = async (id: string) => {
     try {
       await deleteRetoById(id);
+
+      const userRef = doc(db, "users", user?.id);
+
+      if (retoStatus === "proceso") {
+        await updateDoc(userRef, {
+          "retos.progress": Number(user?.retos.progress! > 0 ? (user?.retos.progress! - 1) : user?.retos.progress!),
+          "score": user?.score > 0 ? (user?.score - 1) : user?.score
+        });
+      }
+      if (retoStatus === "terminado") {
+        await updateDoc(userRef, {
+          "retos.completed": Number(user?.retos.completed! > 0 ? (user?.retos.completed! - 1) : user?.retos.completed!),
+          "score": user?.score > 0 ? (user?.score - 1) : user?.score
+        });
+      }
+      if (retoStatus === "fallido") {
+        await updateDoc(userRef, {
+          "retos.failed": Number(user?.retos.failed! > 0 ? (user?.retos.failed! - 1) : user?.retos.failed!),
+          "score": user?.score > 0 ? (user?.score - 1) : user?.score
+        });
+      }
+
       onClose();
       toast.success("Reto eliminado correctamente");
     } catch (error) {
@@ -161,10 +185,17 @@ export default function RetosHistoryList() {
   const renderCell = React.useCallback((reto: DocumentData, columnKey: React.Key, user: DocumentData, explode: boolean) => {
     const cellValue = reto[columnKey as keyof DocumentData];
 
-    function finishReto() {
+    async function finishReto() {
       if (reto.status === "proceso" && !checkDate(reto.endDate)) {
         try {
           finishStateReto(reto.id);
+
+          const userRef = doc(db, "users", user?.id);
+          await updateDoc(userRef, {
+            "retos.completed": Number(user?.retos.completed!) +1,
+            "retos.progress": Number(user?.retos.progress!) -1,
+          });
+
           toast.success("Enhorabuena, has feinalizado tu reto!!!");
           explodeConffeti();
         } catch (error) {

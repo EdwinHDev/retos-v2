@@ -128,8 +128,6 @@ export default function RetosHomeList() {
       }
     }
 
-    console.log(reto.endDate)
-
     switch (columnKey) {
       case "name":
         return (
