@@ -3,6 +3,7 @@ import { createUserWithEmailAndPassword, User, signInWithEmailAndPassword, Googl
 import { DocumentData, collection, doc, getDoc, getDocs, limit, onSnapshot, orderBy, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import { auth, db } from '../config';
 import { Dispatch, SetStateAction } from 'react';
+import { get } from 'http';
 
 export async function createUserWithEmail(displayName: string, email: string, password: string): Promise<User | undefined> {
   try {
@@ -47,7 +48,8 @@ export async function SignInWithGoogle(): Promise<User | undefined> {
   try {
     const provider = new GoogleAuthProvider();
     const res = await signInWithPopup(auth, provider);
-    if (res) {
+    const checkUser = await getDoc(doc(db, "users", res.user.uid));
+    if (res && !checkUser.data()) {
       await setDoc(
         doc(db, 'users', res.user.uid),
         {
@@ -76,7 +78,8 @@ export async function SignInWithGithub(): Promise<User | undefined> {
     const provider = new GithubAuthProvider();
     const res = await signInWithPopup(auth, provider);
     const username = getAdditionalUserInfo(res)?.username;
-    if (res) {
+    const checkUser = await getDoc(doc(db, "users", res.user.uid));
+    if (res && !checkUser.data()) {
       await setDoc(
         doc(db, 'users', res.user.uid),
         {

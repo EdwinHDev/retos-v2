@@ -36,6 +36,7 @@ export const Navbar = () => {
 
 	const signOutSession = async () => {
 		await signOut();
+		setIsMenuOpen(false);
 	}
 
 	return (
