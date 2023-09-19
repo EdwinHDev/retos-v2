@@ -1,8 +1,8 @@
 import FormReto from "@/components/FormReto";
+import { RankingProgress } from "@/components/RankingProgress";
 import RetosHomeList from "@/components/RetosHomeList";
 import { TopRanking } from "@/components/TopRanking";
 import { title, subtitle } from "@/components/primitives";
-import { Avatar } from "@nextui-org/react";
 
 export default function Home() {
 

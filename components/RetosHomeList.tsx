@@ -110,6 +110,7 @@ export default function RetosHomeList() {
       if (reto.status === "proceso" && !checkDate(reto.endDate)) {
         try {
           finishStateReto(reto.id);
+          explodeConffeti();
 
           const userRef = doc(db, "users", user?.id);
           await updateDoc(userRef, {
@@ -119,7 +120,6 @@ export default function RetosHomeList() {
           });
 
           toast.success("Enhorabuena, has feinalizado tu reto!!!");
-          explodeConffeti();
         } catch (error) {
           console.log(error);
           toast.error("Algo salio mal, no puedes finalizar el rero");

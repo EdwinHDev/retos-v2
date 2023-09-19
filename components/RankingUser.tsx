@@ -1,7 +1,8 @@
 "use client";
 
-import { Avatar, Tooltip } from "@nextui-org/react";
 import { useEffect, useRef, useState } from "react";
+import { Avatar, Tooltip } from "@nextui-org/react";
+import { RankingProgress } from "./RankingProgress";
 
 interface Retos {
   completed: number;
@@ -39,8 +40,18 @@ export const RankingUser = ({ displayName = "Sin retador", score = 0, retos = { 
     };
   });
 
+  const style = {
+    top: '0',
+    right: 0,
+    transform: 'translate(0, -50%)',
+    lineHeight: '24px',
+  };
+
   return (
-    <Tooltip delay={200} isOpen={showPosition} content={position === 1 ? "Primer lugar" : position === 2 ? "Segundo lugar" : "Tercer lugar"} placement="bottom" isDisabled={position === 0}>
+    <Tooltip delay={200} isOpen={showPosition} content={position === 1 ?
+      <div className="text-center"><p>Primer lugar</p><p>Score: <span className="font-semibold">{score}</span></p></div> : position === 2 ?
+      <div className="text-center"><p>Segundo lugar</p><p>Score: <span className="font-semibold">{score}</span></p></div> :
+      <div className="text-center"><p>Tercer lugar</p><p>Score: <span className="font-semibold">{score}</span></p></div>} placement="bottom" isDisabled={position === 0}>
       <div
         className={`w-[60px] bg-default-200 rounded-lg relative ${position === 1 ? "h-16" : position === 2 ? "h-10" : "h-6 -order-1"} `}
         onClick={() => {
@@ -92,9 +103,8 @@ export const RankingUser = ({ displayName = "Sin retador", score = 0, retos = { 
           }
         >
           <Avatar
-            isBordered
+            // isBordered
             isFocusable
-            color={position === 1 ? "warning" : position === 2 ? "success" : "default"}
             src={photoURL}
             size="sm"
             className="absolute -top-10 left-2/4 -translate-x-2/4"
@@ -108,6 +118,7 @@ export const RankingUser = ({ displayName = "Sin retador", score = 0, retos = { 
             }}
             onMouseLeave={() => setShowRetador(false)}
           />
+
         </Tooltip>
         {
           position === 1 && (
@@ -138,6 +149,9 @@ export const RankingUser = ({ displayName = "Sin retador", score = 0, retos = { 
               </svg>
             ))
           }
+        </div>
+        <div className="absolute top-[-44px] left-2/4 -translate-x-2/4">
+          <RankingProgress score={score} position={position} />
         </div>
       </div>
     </Tooltip>
