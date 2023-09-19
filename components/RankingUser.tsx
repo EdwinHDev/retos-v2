@@ -48,10 +48,18 @@ export const RankingUser = ({ displayName = "Sin retador", score = 0, retos = { 
   };
 
   return (
-    <Tooltip delay={200} isOpen={showPosition} content={position === 1 ?
-      <div className="text-center"><p>Primer lugar</p><p>Score: <span className="font-semibold">{score}</span></p></div> : position === 2 ?
-      <div className="text-center"><p>Segundo lugar</p><p>Score: <span className="font-semibold">{score}</span></p></div> :
-      <div className="text-center"><p>Tercer lugar</p><p>Score: <span className="font-semibold">{score}</span></p></div>} placement="bottom" isDisabled={position === 0}>
+    <Tooltip
+      delay={200}
+      isOpen={showPosition}
+      content={
+        position === 1 ?
+          <div className="text-center"><p>Primer lugar</p><p>Score: <span className="font-semibold">{score}</span></p></div> : position === 2 ?
+          <div className="text-center"><p>Segundo lugar</p><p>Score: <span className="font-semibold">{score}</span></p></div> :
+          <div className="text-center"><p>Tercer lugar</p><p>Score: <span className="font-semibold">{score}</span></p></div>
+        }
+      placement="bottom"
+      isDisabled={position === 0}
+    >
       <div
         className={`w-[60px] bg-default-200 rounded-lg relative ${position === 1 ? "h-16" : position === 2 ? "h-10" : "h-6 -order-1"} `}
         onClick={() => {
