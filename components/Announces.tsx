@@ -17,7 +17,9 @@ export const Announces = () => {
 
   const registerNewView = async (id: string, displayName: string, idUser: string, photoURL: string) => {
     try {
-      await viewAnnounce(id, displayName, idUser, photoURL);
+      if(displayName) {
+        await viewAnnounce(id, displayName, idUser, photoURL);
+      }
     } catch (error) {
       console.log(error);
     }
