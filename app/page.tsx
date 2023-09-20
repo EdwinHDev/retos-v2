@@ -7,8 +7,11 @@ import { title, subtitle } from "@/components/primitives";
 export default function Home() {
 
 	return (
-		<section className="flex flex-col items-center justify-center gap-6 py-8 md:py-10">
-			<Announces />
+		<section className="flex flex-col items-center justify-center gap-6 py-8 md:py-10 relative">
+			<div className="absolute top-0 right-0">
+				<Announces />
+			</div>
+
 			<TopRanking />
 			<div className="inline-block max-w-lg text-center justify-center">
 				<h1 className={title()}>¿Listo para un&nbsp;</h1>
