@@ -8,7 +8,7 @@ export default function Home() {
 
 	return (
 		<section className="flex flex-col items-center justify-center gap-6 py-8 md:py-10 relative">
-			<div className="absolute top-0 right-0">
+			<div className="absolute -top-14 right-0">
 				<Announces />
 			</div>
 
