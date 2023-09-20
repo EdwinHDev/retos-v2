@@ -22,6 +22,7 @@ export async function createUserWithEmail(displayName: string, email: string, pa
             failed: 0,
             progress: 0
           },
+          role: "client",
           score: 0
         },
         { merge: true }
@@ -62,6 +63,7 @@ export async function SignInWithGoogle(): Promise<User | undefined> {
             failed: 0,
             progress: 0
           },
+          role: "client",
           score: 0
         },
         { merge: true }
@@ -92,6 +94,7 @@ export async function SignInWithGithub(): Promise<User | undefined> {
             failed: 0,
             progress: 0
           },
+          role: "client",
           score: 0
         },
         { merge: true }

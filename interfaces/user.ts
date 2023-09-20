@@ -13,4 +13,5 @@ export interface IUser {
   password: string;
   retos?: retos;
   score?: number;
+  role?: "admin" | "client";
 }

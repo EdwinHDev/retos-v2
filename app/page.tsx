@@ -1,3 +1,4 @@
+import { Announces } from "@/components/Announces";
 import FormReto from "@/components/FormReto";
 import RetosHomeList from "@/components/RetosHomeList";
 import { TopRanking } from "@/components/TopRanking";
@@ -7,6 +8,7 @@ export default function Home() {
 
 	return (
 		<section className="flex flex-col items-center justify-center gap-6 py-8 md:py-10">
+			<Announces />
 			<TopRanking />
 			<div className="inline-block max-w-lg text-center justify-center">
 				<h1 className={title()}>¿Listo para un&nbsp;</h1>

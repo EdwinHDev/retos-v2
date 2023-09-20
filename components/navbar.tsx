@@ -25,6 +25,7 @@ import { AuthContext } from "@/context/auth";
 import { Avatar, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
 import { signOut } from "@/firebase/services/auth_services";
 import { useRouter } from "next/navigation";
+import { IUser } from "@/interfaces/user";
 
 export const Navbar = () => {
 
@@ -107,6 +108,19 @@ export const Navbar = () => {
 											>
 												Perfil
 											</DropdownItem>
+											{
+												user?.role === "admin" && (
+													<DropdownItem
+														key="dashboard"
+														onClick={() => {
+															router.push("/dashboard")
+															setIsMenuOpen(false)
+														}}
+													>
+														Dashboard
+													</DropdownItem>
+												)
+											}
 											<DropdownItem
 												key="logout"
 												color="danger"
@@ -179,9 +193,26 @@ export const Navbar = () => {
 										Perfil
 									</NextLink>
 								</NavbarMenuItem>
+								{
+									user?.role === "admin" && (
+										<>
+											<NavbarMenuItem>
+												<NextLink
+													color="foreground"
+													href="/dashboard"
+													onClick={() => setIsMenuOpen(false)}
+												>
+													Dashboard
+												</NextLink>
+											</NavbarMenuItem>
+											<Divider />
+										</>
+									)
+								}
 							</>
 						)
 					}
+
 					<NavbarMenuItem>
 						{
 							isLogged ? (
