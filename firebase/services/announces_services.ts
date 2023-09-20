@@ -1,5 +1,5 @@
 
-import { DocumentData, collection, doc, getDocs, orderBy, query, setDoc, limit, onSnapshot, serverTimestamp, deleteDoc, updateDoc } from 'firebase/firestore';
+import { DocumentData, collection, doc, getDocs, orderBy, query, setDoc, limit, onSnapshot, serverTimestamp, deleteDoc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { db } from '../config';
 import { Dispatch, SetStateAction } from 'react';
 import { IAnnounce } from '@/interfaces/announce';
@@ -18,6 +18,7 @@ export async function createNewAnnounce(announce: IAnnounce): Promise<IAnnounce 
         rules,
         reward,
         state: "active",
+        view: [],
         timestampUpdated: serverTimestamp(),
         timestampCreated: serverTimestamp(),
       },
@@ -36,6 +37,18 @@ export async function getAnnounces(): Promise<DocumentData[] | undefined> {
     dataAnnounces.push(doc.data());
   });
   return dataAnnounces;
+}
+
+export async function viewAnnounce(id: string, userNameView: string, userIdView: string, userImageView: string) {
+  const announceRef = doc(db, "announces", id);
+  const newViewer = {
+    userNameView,
+    userIdView,
+    userImageView,
+  }
+  await updateDoc(announceRef, {
+    view: arrayUnion(newViewer)
+  });
 }
 
 export async function deleteAnnounceById(id: string) {

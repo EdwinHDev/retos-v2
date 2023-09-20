@@ -1,3 +1,8 @@
+export interface IView {
+  userNameView: string;
+  userIdView: string;
+  userImageView: string;
+}
 
 export interface IAnnounce {
   id?: string;
@@ -6,4 +11,5 @@ export interface IAnnounce {
   rules?: string;
   reward?: string;
   state?: "active" | "inactive";
+  view?: IView[];
 }

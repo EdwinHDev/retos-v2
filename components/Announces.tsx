@@ -2,14 +2,26 @@
 
 import { AnnouncesContext } from "@/context/announces";
 import { IAnnounce } from "@/interfaces/announce";
-import { Button, Card, CardBody, Checkbox, Chip, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Input, Link, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react";
+import { Button, Card, CardBody, Checkbox, Chip, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Input, Link, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Popover, PopoverContent, PopoverTrigger, useDisclosure } from "@nextui-org/react";
 import { useContext, useEffect, useState } from "react";
-import { AnnounceIcon, MailIcon } from "./icons";
+import { AnnounceIcon, MailIcon, ViewIcon } from "./icons";
+import { AuthContext } from "@/context/auth";
+import { viewAnnounce } from "@/firebase/services/announces_services";
+import Image from "next/image";
 
 export const Announces = () => {
 
   const { loading, announces } = useContext(AnnouncesContext);
+  const { user } = useContext(AuthContext);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const registerNewView = async (id: string, displayName: string, idUser: string, photoURL: string) => {
+    try {
+      await viewAnnounce(id, displayName, idUser, photoURL);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <>
@@ -27,7 +39,10 @@ export const Announces = () => {
                 }
                 color="default"
                 className="min-w-max cursor-pointer relative"
-                onClick={onOpen}
+                onClick={() => {
+                  onOpen();
+                  registerNewView(announce.id, user?.displayName, user?.id, user?.photoURL);
+                }}
               >Nuevo anuncio</Chip>
               <Modal
                 isOpen={isOpen}
@@ -72,6 +87,37 @@ export const Announces = () => {
                             </div>
                           </CardBody>
                         </Card>
+                        <Popover placement="bottom">
+                          <PopoverTrigger>
+                            <div className="flex justify-center">
+                              <ViewIcon width={20} height={20} />
+                            </div>
+                          </PopoverTrigger>
+                          <PopoverContent>
+                            <div className="px-1 py-2">
+                              <div className="text-small font-bold mb-2">Visto por:</div>
+                              <div className="flex flex-col gap-2">
+                                {
+                                  announce.view.length > 0 ? (
+                                    announce.view.map(({ userNameView, userIdView, userImageView }: { userNameView: string, userIdView: string, userImageView: string}) => (
+                                      <div
+                                        key={userIdView}
+                                        className="flex gap-1 items-center"
+                                      >
+                                        <div className="w-5 h-5 rounded-full overflow-hidden">
+                                          <Image width={20} height={20} src={userImageView} alt={userNameView} />
+                                        </div>
+                                        <p className="text-sm text-default-500">{ userNameView }</p>
+                                      </div>
+                                    ))
+                                  ) : (
+                                    <div className="text-tiny">Aun nadie ha visto el anuncio</div>
+                                  )
+                                }
+                              </div>
+                            </div>
+                          </PopoverContent>
+                        </Popover>
                       </ModalBody>
                     </>
                   )}
