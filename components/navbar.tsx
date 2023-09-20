@@ -109,7 +109,7 @@ export const Navbar = () => {
 												Perfil
 											</DropdownItem>
 											{
-												user?.role === "admin" && (
+												user?.role && user.role === "admin" && (
 													<DropdownItem
 														key="dashboard"
 														onClick={() => {
