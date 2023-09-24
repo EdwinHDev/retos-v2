@@ -28,14 +28,22 @@ export const Announces = () => {
   return (
     <>
       {
-        announces.length > 0 && announces.filter(announce => announce.state === "active").map((announce, index) => (
+        announces.length > 0 && announces.filter(anno => anno.state === "active").map((announce, index) => (
 
           index === 0 && (
             <div key={announce.id}>
               <Chip
                 startContent={
                   <div className="relative">
-                    <AnnounceIcon width={20} height={20} className="absolute animate-ping fill-warning-500" />
+                    {
+                      user ? (
+                        announce?.view.userIdView !== user!.id && (
+                          <div />
+                        )
+                      ) : (
+                        <AnnounceIcon width={20} height={20} className="absolute animate-ping fill-warning-500" />
+                      )
+                    }
                     <AnnounceIcon width={20} height={20} className="fill-warning-500" />
                   </div>
                 }

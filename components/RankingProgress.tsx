@@ -15,7 +15,7 @@ export const RankingProgress = ({ score, position }: Props) => {
     {
       name: "score",
       score: score,
-      fill: position === 1 ? "#f59e0b" : position === 2 ? "#22c55e" : "#1f2937",
+      fill: position === 1 ? "#f59e0b" : position === 2 ? "#22c55e" : "#64748b",
     }
   ];
 
