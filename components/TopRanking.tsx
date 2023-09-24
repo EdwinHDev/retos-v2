@@ -9,17 +9,14 @@ import { TopRankingLoading } from "./TopRankingLoading";
 export const TopRanking = () => {
 
   const [topRanking, setTopRanking] = useState<DocumentData[] | undefined>([]);
-  const [orderByFailedUsers, setOrderByFailedUsers] = useState<DocumentData[] | undefined>([]);
-  const [loading, setLoading] = useState(true);
+  const [orderByScoreUsers, setOrderByScoreUsers] = useState<DocumentData[] | undefined>([]);
 
   useEffect(() => {
     const getRanking = async () => {
       try {
         await getTopRanking(setTopRanking);
-        setLoading(false);
       } catch (error) {
         console.log(error);
-        setLoading(false);
       }
     }
     getRanking();
@@ -38,7 +35,6 @@ export const TopRanking = () => {
         }
         return 0;
       });
-
       orderByFailed(orderByName);
     }
   }, [topRanking]);
@@ -56,20 +52,35 @@ export const TopRanking = () => {
         return failedA - failedB;
       }
     });
+    orderByScore(orderByFailed);
+  }
 
-    setOrderByFailedUsers(orderByFailed);
+  const orderByScore = (users: DocumentData[]) => {
+    const orderByScore = users.sort(function (a, b) {
+      var scoreA = a.score;
+      var scoreB = b.score;
+      var failedA = a.retos.failed;
+      var failedB = b.retos.failed;
+
+      if (failedA !== failedB) {
+        return failedA - failedB;
+      }
+
+      return scoreB - scoreA;
+    });
+    setOrderByScoreUsers(orderByScore);
   }
 
   return (
     <div>
       <div className="flex justify-center gap-2 items-end">
         {
-          orderByFailedUsers?.length! < 1 ? (
+          orderByScoreUsers?.length! < 1 ? (
             <TopRankingLoading />
           ) : (
             <>
               {
-                orderByFailedUsers && orderByFailedUsers.map((user, index) => (
+                orderByScoreUsers && orderByScoreUsers.map((user, index) => (
                   user.score < 1 ? (
                     <RankingUser
                       key={user.id}
@@ -90,7 +101,6 @@ export const TopRanking = () => {
             </>
           )
         }
-
       </div>
       <div>
         <h2 className="text-center text-default-400 font-semibold mt-2">Top Ranking</h2>
