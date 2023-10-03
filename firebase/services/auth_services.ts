@@ -171,7 +171,10 @@ export async function getTopRanking(setState: Dispatch<SetStateAction<DocumentDa
       top.push(doc.data());
     });
     const orderList = orderRanking(top);
-    setState(orderList);
+    const finishList = orderList?.map((user, i) => {
+      return {...user, position: i+1}
+    });
+    setState(finishList);
   });
 }
 
