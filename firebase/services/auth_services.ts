@@ -3,7 +3,7 @@ import { createUserWithEmailAndPassword, User, signInWithEmailAndPassword, Googl
 import { DocumentData, collection, doc, getDoc, getDocs, limit, onSnapshot, orderBy, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import { auth, db } from '../config';
 import { Dispatch, SetStateAction } from 'react';
-import { get } from 'http';
+import { orderRanking } from '@/utils/orderRanking';
 
 export async function createUserWithEmail(displayName: string, email: string, password: string): Promise<User | undefined> {
   try {
@@ -163,14 +163,15 @@ export async function updateUserProfile(displayName: string, photoURL: string) {
   });
 }
 
-export async function getTopRanking(setState: Dispatch<SetStateAction<DocumentData[] | undefined>>) {
-  const q = query(collection(db, "users"), orderBy("score", "desc"), limit(3));
+export async function getTopRanking(setState: Dispatch<SetStateAction<DocumentData[] | undefined>>, max = 3) {
+  const q = query(collection(db, "users"), orderBy("score", "desc"), where("score", ">" , 0), limit(max));
   const unsubscribe = onSnapshot(q, (querySnapshot) => {
     const top: DocumentData[] = [];
     querySnapshot.forEach((doc) => {
       top.push(doc.data());
     });
-    setState(top);
+    const orderList = orderRanking(top);
+    setState(orderList);
   });
 }
 

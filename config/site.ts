@@ -5,11 +5,19 @@ export const siteConfig = {
 	description: "Crea retos y manten un control de ellos",
 	navItems: [
 		{
+			label: "Ranking",
+			href: "/ranking",
+		},
+		{
 			label: "Historial",
 			href: "/history",
 		},
 	],
 	navMenuItems: [
+		{
+			label: "Ranking",
+			href: "/ranking",
+		},
 		{
 			label: "Historial",
 			href: "/history",
