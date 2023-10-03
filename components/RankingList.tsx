@@ -20,7 +20,7 @@ import { getTopRanking } from "@/firebase/services/auth_services";
 import { TopIcon } from "./icons";
 
 const columns = [
-  { name: "POSICIÓN", uid: "position"},
+  { name: "TOP", uid: "position"},
   { name: "NOMBRE", uid: "name"},
   { name: "TERMINADOS", uid: "completed" },
   { name: "FALLIDOS", uid: "failed" },
