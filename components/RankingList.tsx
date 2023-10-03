@@ -21,10 +21,10 @@ import { TopIcon } from "./icons";
 
 const columns = [
   { name: "NOMBRE", uid: "name"},
-  { name: "Terminados", uid: "completed" },
-  { name: "Fallidos", uid: "failed" },
-  { name: "Progreso", uid: "progress" },
-  { name: "Clasificación", uid: "classification" },
+  { name: "TERMINADOS", uid: "completed" },
+  { name: "FALLIDOS", uid: "failed" },
+  { name: "PROGRESO", uid: "progress" },
+  { name: "CLASIFICACIÓN", uid: "classification" },
   { name: "SCORE", uid: "score" },
 ];
 
@@ -67,7 +67,7 @@ export default function RankingList() {
       case "completed":
         return (
           <div className="flex flex-col min-w-max">
-            <p className="text-bold text-sm text-default-400">
+            <p className="text-bold text-sm text-success-500">
               {topRanking.retos.completed}
             </p>
           </div>
@@ -75,7 +75,7 @@ export default function RankingList() {
         case "failed":
         return (
           <div className="flex flex-col min-w-max">
-            <p className="text-bold text-sm text-default-400">
+            <p className={`text-bold text-sm ${topRanking.retos.failed > 0 ? "text-danger-500" : "text-default-400"}`}>
               {topRanking.retos.failed}
             </p>
           </div>
@@ -83,7 +83,7 @@ export default function RankingList() {
         case "progress":
         return (
           <div className="flex flex-col min-w-max">
-            <p className="text-bold text-sm text-default-400">
+            <p className={`text-bold text-sm ${topRanking.retos.progress > 0 ? "text-warning-500" : "text-default-400"}`}>
               {topRanking.retos.progress}
             </p>
           </div>
