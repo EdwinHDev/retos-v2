@@ -4,6 +4,7 @@ import { DocumentData, collection, doc, getDoc, getDocs, limit, onSnapshot, orde
 import { auth, db } from '../config';
 import { Dispatch, SetStateAction } from 'react';
 import { orderRanking } from '@/utils/orderRanking';
+import { uploadFile } from './storage_services';
 
 export async function createUserWithEmail(displayName: string, email: string, password: string): Promise<User | undefined> {
   try {
@@ -125,19 +126,30 @@ export async function signOut(): Promise<void> {
   }
 }
 
-export async function updateUserProfile(displayName: string, photoURL: string) {
+export async function updateUserProfile(user: DocumentData , image: File | null) {
+
+  const { id, displayName, photoURL } = user;
+
+  let newPhotoURL = "";
+
+  if(image ) {
+    try {
+      const url = await uploadFile(image, id);
+      newPhotoURL = url;
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+  }
+
   updateProfile(auth.currentUser!, {
     displayName: displayName,
-    photoURL: photoURL
+    photoURL: newPhotoURL !== "" ? newPhotoURL : photoURL
   }).then(() => {
     const userRef = doc(db, "users", auth.currentUser?.uid!);
     updateDoc(userRef, {
-      displayName,
-      photoURL
-    }).then(res => {
-      console.log(res);
-    }).catch(error => {
-      console.log(error);
+      displayName: displayName,
+      photoURL: newPhotoURL !== "" ? newPhotoURL : photoURL
     });
 
     const q = query(collection(db, "retos"), where("ownerId", "==", auth.currentUser?.uid!));
@@ -146,7 +158,8 @@ export async function updateUserProfile(displayName: string, photoURL: string) {
         querySnapshot.forEach((doc) => {
           // console.log(doc.id, " => ", doc.data());
           updateDoc(doc.ref, {
-            owner: displayName
+            owner: displayName,
+            photoURL: newPhotoURL !== "" ? newPhotoURL : photoURL
           }).then(() => {
             // ...
           }).catch(error => {

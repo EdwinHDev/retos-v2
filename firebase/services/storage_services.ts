@@ -1,16 +1,11 @@
-import { getStorage, ref } from "firebase/storage";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
-export async function uploadFile() {
-  // Create a root reference
+export async function uploadFile(file: File, id: string) {
   const storage = getStorage();
+  const storageRef = ref(storage, id);
 
-  // Create a reference to 'mountains.jpg'
-  const mountainsRef = ref(storage, 'mountains.jpg');
+  await uploadBytes(storageRef, file);
+  const url = await getDownloadURL(storageRef);
 
-  // Create a reference to 'images/mountains.jpg'
-  const mountainImagesRef = ref(storage, 'images/mountains.jpg');
-
-  // While the file names are the same, the references point to different files
-  mountainsRef.name === mountainImagesRef.name;           // true
-  mountainsRef.fullPath === mountainImagesRef.fullPath;   // false 
+  return url;
 }
