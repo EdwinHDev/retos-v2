@@ -7,6 +7,7 @@ import { AnnounceForm } from "@/components/AnnounceForm";
 import { useContext } from 'react';
 import { AuthContext } from "@/context/auth";
 import { useRouter } from "next/navigation";
+import { RetosGrupales } from "@/components/RetosGrupales";
 
 export default function DashboardPage() {
 
@@ -82,7 +83,7 @@ export default function DashboardPage() {
         >
           <Card>
             <CardBody>
-              En construcción
+              <RetosGrupales />
             </CardBody>
           </Card>
         </Tab>
