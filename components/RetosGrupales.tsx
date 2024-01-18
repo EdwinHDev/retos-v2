@@ -49,7 +49,7 @@ export const RetosGrupales = () => {
       });
       setImagesArr(newArr);
     }
-  }, [images]);
+  }, [ images ]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAnnounceData({
