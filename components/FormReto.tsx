@@ -4,7 +4,7 @@ import { AuthContext } from "@/context/auth";
 import { Input } from "@nextui-org/input";
 import { DocumentData, doc, updateDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { toast } from "sonner";
 
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from "@nextui-org/react";
