@@ -1,8 +1,7 @@
 "use client";
 
 import { Tabs, Tab, Card, CardBody, Input, Spinner, Button } from "@nextui-org/react";
-import { IconSvgProps } from '../../types/index';
-import { AnnounceIcon, Logo, LogoRetos } from "@/components/icons";
+import { AnnounceIcon, Logo } from "@/components/icons";
 import { AnnounceForm } from "@/components/AnnounceForm";
 import { useContext } from 'react';
 import { AuthContext } from "@/context/auth";
