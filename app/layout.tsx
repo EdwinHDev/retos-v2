@@ -48,11 +48,11 @@ export default function RootLayout({
 							<Link
 								isExternal
 								className="flex items-center gap-1 text-current"
-								href="https://tulojita.com"
-								title="tulojita.com inicio"
+								href="https://lojitastudio.com"
+								title="lojitastudio.com inicio"
 							>
 								<span className="text-default-600">Powered by</span>
-								<p className="text-indigo-500">Tu Lojita</p>
+								<p className="text-indigo-500">Lojita Studio</p>
 							</Link>
 						</footer>
 					</div>
